@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        /*
+        //async await com axios
+        import axios from "axios";
+
+        async function fetchRepos() {
+            try {
+                const user = await axios.get("https://api.github.com/users/devteu");
+                const repos = await axios.get(user.data.repos_url);
+                console.log(repos.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchRepos();
+        */
+
+
+
+
+
+        //Visão mais síncrona usando asinc await
+        async function start() {
+            const url = "https://api.github.com/users/devteu";
+            const user = await fetch(url).then((r) => r.json());
+            const userRepos = await fetch(user.repos_url).then((r) => r.json());
+            console.log(userRepos);
+        }
+        //Também posso fazer desse modo para pegar o  'erro'
+        start().catch((err) => {
+            console.log(err.message);
+        });
+
+
+
+
+        const promessa = new Promise((resolve, reject) => {
+            return reject('error');
+        });
+
+        //Precisar ser async por dentro da função vai usar awayt
+        async function start() {
+            try {
+                //o await espera uma promessa e pega o resultado dela
+                const result = await promessa;
+                console.log(result);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                console.log("roda sempre!");
+            }
+        }
+        start();
+
+
+        /*
+        //Promisses em paralelo
+        //executa varias promisses de uma vez, cada get é uma posição do array
+        Promise.all([
+            axios.get("https://api.github.com/users/devteu"),
+            axios.get("https://api.github.com/users/devteu/repos")
+        ])
+            //so entra no then quando todos os get de cima terminar de rodar
+            .then((response) => {
+                console.log(response[1].data.length);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+        */
+
+
+
+
+
+
+        //promisses com fetch encadeadas
+        fetch('https://api.github.com/users/devteu')
+            .then(response => response.json())
+            .then(data => fetch(data.repos_url))
+            .then(res => res.json())
+            .then(d => console.log(d))
+            .catch(err => console.log(err))
+
+
+
+
+        /*
+        //promisses
+        let aceitar = true;
+
+        console.log('pedi uber')
+
+        const promessa = new Promise((resolve, reject) => {
+            if (aceitar) {
+                return resolve('pedido aceito');
+            }
+            return reject('pedido negado');
+        })
+
+        console.log('aguardando')
+
+        promessa
+            .then(result => console.log(result))
+            .catch(erro => console.log(erro))
+            .finally(() => {
+                console.log('finalizada')
+            })
+        */
+
+    </script>
+</body>
+
+</html>
